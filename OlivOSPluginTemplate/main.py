@@ -84,7 +84,7 @@ def poke_reply(plugin_event, Proc):
 
 
 # 主动发送消息示例实现
-def send_message_force(botHash, send_type, target_id, message, flag_from_qq_Guild):
+def send_message_force(botHash, send_type, target_id, message, flag_from_qq_Guild=False):
     Proc = gProc
     if (
         Proc is not None
@@ -99,7 +99,9 @@ def send_message_force(botHash, send_type, target_id, message, flag_from_qq_Guil
             Proc.log
         )
         if flag_from_qq_Guild:
-            plugin_event.data.extend = dict(
+            extend = getattr(plugin_event.data, 'extend', {}) or {}
+            extend.update(
                 flag_from_qq=True, flag_from_direct=send_type == 'private', reply_msg_id=None
             )
+            plugin_event.data.extend = extend
         plugin_event.send(send_type, target_id, message)
